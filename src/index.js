@@ -2,7 +2,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 const fetch = require("isomorphic-fetch");
 const { setIntervalAsync } = require("set-interval-async/dynamic");
-const { getChanges, handleNotification } = require("./utils.js");
+const { getChanges, handleNotification, handleErrorNotification } = require("./utils.js");
 const { Telegraf } = require("telegraf");
 
 /** Store Data in memory */
@@ -35,10 +35,13 @@ const checkForChanges = async (test = false, ctx) => {
 		mode: "cors",
 	})
 		.then((response) => response.json())
-		.catch((err) => console.error(err));
+		.catch((err) => {
+			console.error(err);
+			return handleErrorNotification(bot, err);
+		});
 
 	try {
-		console.log(`currentData.lockedJewelTotal = ${currentData.lockedJewelTotal}`);
+		console.log(`currentData.lockedJewelTotal = ${currentData?.lockedJewelTotal}`);
 	} catch (error) {
 		console.log("something is wrong with currentData");
 	}
@@ -50,7 +53,7 @@ const checkForChanges = async (test = false, ctx) => {
 	// console.log(`lastData ${JSON.stringify(lastData)}`);
 
 	if (test) await handleNotification(bot, lastData, currentData, changes, ctx);
-	else if (currentData.lockedJewelTotal !== lastData.lockedJewelTotal)
+	else if (currentData?.lockedJewelTotal !== lastData?.lockedJewelTotal)
 		await handleNotification(bot, lastData, currentData, changes);
 
 	/** store current data in memory */

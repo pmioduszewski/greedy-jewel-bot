@@ -27,14 +27,14 @@ exports.handleNotification = async (bot, lastData, currentData, changes, ctx) =>
 	// prepare message text
 	let msg = "";
 	msg += `🔒 LockedTotal: <b>${bigNumberToFloat(
-		currentData.lockedJewelTotal
+		currentData?.lockedJewelTotal
 	).toLocaleString()}</b> 💎 ${changes > 0 ? "🔼 " + changes : "⬇️ " + changes} \n`;
 	msg += `🔄 From: <b>${bigNumberToFloat(
-		lastData.lockedJewelTotal
+		lastData?.lockedJewelTotal
 	).toLocaleString()}</b> To <b>${bigNumberToFloat(
-		currentData.lockedJewelTotal
+		currentData?.lockedJewelTotal
 	).toLocaleString()}</b>\n`;
-	msg += `Stashed: <b>${currentData.totalStashes}</b>\n`;
+	msg += `Stashed: <b>${currentData?.totalStashes}</b>\n`;
 
 	console.log(
 		`send notification to: ${ctx ? ctx.message.from.id : process.env.MASTER_TELEGRAM_USER_ID}`
@@ -42,6 +42,15 @@ exports.handleNotification = async (bot, lastData, currentData, changes, ctx) =>
 
 	// send notification
 	if (ctx) return await ctx.reply(msg, { parse_mode: "html" });
+	return await bot.telegram.sendMessage(process.env.MASTER_TELEGRAM_USER_ID, msg, {
+		parse_mode: "html",
+	});
+};
+
+exports.handleErrorNotification = async (bot, error) => {
+	let msg = "";
+	msg += "ERROR:";
+	msg += error.message;
 	return await bot.telegram.sendMessage(process.env.MASTER_TELEGRAM_USER_ID, msg, {
 		parse_mode: "html",
 	});
