@@ -7,8 +7,8 @@ const { Telegraf } = require("telegraf");
 
 /** Store Data in memory */
 const lastData = {
-	lockedJewelTotal: "30308121046434255144595",
-	totalStashes: "80",
+	lockedJewelTotal: "0",
+	totalStashes: "0",
 };
 const storeCurrentData = (lockedJewelTotal, totalStashes) => {
 	lastData.lockedJewelTotal = lockedJewelTotal;
